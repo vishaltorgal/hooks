@@ -13,8 +13,7 @@
 9. [useMemo](#9-usememo)
 10. [useCallback](#10-usecallback)
 11. [Difference between custom hook and components](#11-difference-between-custom-hook-and-components)
-
-
+12. [useReducer vs Context API vs Redux](#12-usereducer-vs-context-api-vs-redux)
 
 
 ## 1. **useLayoutEffect**
@@ -553,4 +552,99 @@ export default App;
 | Best used when  | You need to show something | You need to share logic |
 | React treats as | Renderable element         | Logic abstraction       |
 
+## 12. useReducer vs Context API vs Redux
 
+🎬 Imagine You Are Managing a Restaurant
+
+***We’ll compare:***
+- useReducer
+- Context API
+- Redux
+
+
+## 1️⃣ useReducer
+🍳 `Kitchen Manager`
+
+*Inside the kitchen:*
+
+***Many things can happen to one order:****
+
+- Add item
+- Remove item
+- Change quantity
+- Apply discount
+- Cancel order
+
+*All these actions affect one order state.*
+
+***You need rules:***
+- Cannot cook if ingredients are out
+- Cannot apply discount twice
+- Cannot cancel after serving
+
+So the kitchen manager handles all order decisions properly.
+
+👉 **That kitchen manager = useReducer**
+
+***When to use:***
+- One feature
+- Complex logic
+- Many actions changing the same state
+- Clear decision rules needed
+
+## 2️⃣ Context API
+📢 `Restaurant Announcement System`
+
+*Now imagine:*
+
+***The restaurant has information everyone needs:***
+- Today’s special dish
+- Restaurant closing time
+- Discount day
+- Chef name
+
+*Instead of telling each waiter individually, you make an announcement.*
+
+*Everyone can access that info easily.*
+
+👉 **That announcement system = Context API**
+
+***When to use:***
+- Theme
+- Logged-in user
+- Language
+- Small global settings
+- Data that many components need
+
+***Important:***
+- Context only shares data.
+- It does not manage complex logic.
+
+
+## 3️⃣ Redux
+🏢 `Restaurant Franchise Headquarters`
+
+***Now imagine:***
+
+*You own 200 restaurant branches across the country.*
+
+***You need:***
+- Centralized order tracking
+- Inventory management
+- Employee management
+- Payment systems
+- Analytics
+- Logging
+- Strict rules
+- Audit tracking
+
+*You cannot manage this casually.*
+
+***You need:***
+- Structured flow
+- Predictable updates
+- Middleware
+- Debugging tools
+- Scalable architecture
+
+👉 **That headquarters system = Redux**
