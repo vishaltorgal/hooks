@@ -14,6 +14,8 @@
 10. [useCallback](#10-usecallback)
 11. [Difference between custom hook and components](#11-difference-between-custom-hook-and-components)
 12. [useReducer vs Context API vs Redux](#12-usereducer-vs-context-api-vs-redux)
+13. [Form Validation (Custom Hook)](#13-form-validation-custom-hook)
+14. [Form Validation (react hook form)](#13-form-validation-react-hook-form)
 
 
 ## 1. **useLayoutEffect**
@@ -648,3 +650,198 @@ So the kitchen manager handles all order decisions properly.
 - Scalable architecture
 
 👉 **That headquarters system = Redux**
+
+
+
+## 13. Form Validation (Custom Hook)
+
+Simple Custom Hook for Form Validation
+
+### ✅ Step 1: Create Simple Custom Hook
+`📄 useForm.js`
+```jsx
+import { useState } from "react";
+
+function useForm(initialValues) {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setValues({
+      ...values,
+      [name]: value,
+    });
+  };
+
+  const validate = () => {
+    let newErrors = {};
+
+    if (!values.name) {
+      newErrors.name = "Name is required";
+    }
+
+    if (!values.email) {
+      newErrors.email = "Email is required";
+    }
+
+    if (!values.password || values.password.length < 6) {
+      newErrors.password = "Password must be 6+ characters";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e, callback) => {
+    e.preventDefault();
+
+    if (validate()) {
+      callback(); // only runs if valid
+    }
+  };
+
+  return {
+    values,
+    errors,
+    handleChange,
+    handleSubmit,
+  };
+}
+
+export default useForm;
+```
+
+### ✅ Step 2: Use It in Form Component
+`📄 RegisterForm.jsx`
+
+```jsx
+import useForm from "./useForm";
+
+function RegisterForm() {
+  const { values, errors, handleChange, handleSubmit } = useForm({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const onSubmit = () => {
+    console.log("Form Submitted", values);
+  };
+
+  return (
+    <form onSubmit={(e) => handleSubmit(e, onSubmit)}>
+      <div>
+        <input
+          name="name"
+          placeholder="Name"
+          value={values.name}
+          onChange={handleChange}
+        />
+        {errors.name && <p>{errors.name}</p>}
+      </div>
+
+      <div>
+        <input
+          name="email"
+          placeholder="Email"
+          value={values.email}
+          onChange={handleChange}
+        />
+        {errors.email && <p>{errors.email}</p>}
+      </div>
+
+      <div>
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={values.password}
+          onChange={handleChange}
+        />
+        {errors.password && <p>{errors.password}</p>}
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+export default RegisterForm;
+```
+
+### 🔥 What This Does
+
+- Custom hook manages state
+- Validation runs on submit
+- If errors exist → form does not submit
+- Component stays clean
+
+## 14. Form Validation (react hook form)
+
+Unlike normal React forms:
+
+- It uses uncontrolled components
+- It does less re-rendering
+- Very small bundle size
+- Easy integration with validation libraries like ***Yup***
+
+```jsx
+import { useForm } from "react-hook-form";
+
+function RegisterForm() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    console.log("Form Submitted", data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      
+      <input
+        placeholder="Name"
+        {...register("name", {
+          required: "Name is required",
+        })}
+      />
+      {errors.name && <p>{errors.name.message}</p>}
+
+      <input
+        placeholder="Email"
+        {...register("email", {
+          required: "Email is required",
+          pattern: {
+            value: /^\S+@\S+\.\S+$/,
+            message: "Invalid email format",
+          },
+        })}
+      />
+      {errors.email && <p>{errors.email.message}</p>}
+
+      <input
+        type="password"
+        placeholder="Password"
+        {...register("password", {
+          required: "Password is required",
+          minLength: {
+            value: 6,
+            message: "Minimum 6 characters",
+          },
+        })}
+      />
+      {errors.password && <p>{errors.password.message}</p>}
+
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+export default RegisterForm;
+```
