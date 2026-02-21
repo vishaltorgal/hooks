@@ -16,6 +16,7 @@
 12. [useReducer vs Context API vs Redux](#12-usereducer-vs-context-api-vs-redux)
 13. [Form Validation (Custom Hook)](#13-form-validation-custom-hook)
 14. [Form Validation (react hook form)](#13-form-validation-react-hook-form)
+15. [Form Validation (formik)](#15-form-validation-formik)
 
 
 ## 1. **useLayoutEffect**
@@ -845,3 +846,69 @@ function RegisterForm() {
 
 export default RegisterForm;
 ```
+<br>
+
+## 15. Form Validation (formik)
+
+```jsx
+import { useFormik } from "formik";
+
+function LoginForm() {
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+
+    validate: (values) => {
+      const errors = {};
+
+      if (!values.email) {
+        errors.email = "Email is required";
+      }
+
+      if (!values.password) {
+        errors.password = "Password is required";
+      }
+
+      return errors;
+    },
+
+    onSubmit: (values) => {
+      console.log("Form Submitted", values);
+    },
+  });
+
+  return (
+    <form onSubmit={formik.handleSubmit}>
+      <input
+        name="email"
+        placeholder="Email"
+        onChange={formik.handleChange}
+        value={formik.values.email}
+      />
+      {formik.errors.email && <p>{formik.errors.email}</p>}
+
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        onChange={formik.handleChange}
+        value={formik.values.password}
+      />
+      {formik.errors.password && <p>{formik.errors.password}</p>}
+
+      <button type="submit">Submit</button>
+    </form>
+  );
+}
+
+export default LoginForm;
+```
+
+### 🔥 What Happens
+
+- useFormik() manages form state
+- validate() runs before submit
+- If errors exist → form does NOT submit
+- onSubmit() runs only if no errors
