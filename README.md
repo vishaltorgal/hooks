@@ -73,12 +73,16 @@ If you replace useLayoutEffect with useEffect:
 - Then it changes to lightblue
 - Small flicker happens
 
-### 🧠 Simple Rule
+### 🧠 Simple Rule useLayoutEffect
 
 Use useLayoutEffect when:
 - You need to measure DOM
 - You need to change layout immediately
 - You want to avoid flicker
+- measure width/height/position
+- Scroll Position Control
+- Animations : Before starting an animation you may need to calculate positions.
+- Third-Party DOM Libraries like D3.js, GSAP, Chart.js sometimes need DOM measurements.
 
 <br>
 
