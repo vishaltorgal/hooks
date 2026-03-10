@@ -219,7 +219,7 @@ export default function SignupForm() {
 - A custom hook is a reusable JavaScript function that uses React hooks and starts with the word ***use***.
 - It helps you share logic between components without repeating code.
   
-### ***Custom Hook**
+### ***Custom Hook***
 ```jsx
 import { useState } from "react";
 
