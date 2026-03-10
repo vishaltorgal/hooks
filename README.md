@@ -19,7 +19,7 @@
 15. [Form Validation (formik)](#15-form-validation-formik)
 
 
-## 1. **useLayoutEffect**
+## 1. useLayoutEffect
 
 useLayoutEffect is a Hook that runs synchronously after DOM updates but before the browser paints the screen.
 
@@ -86,7 +86,7 @@ Use useLayoutEffect when:
 
 <br>
 
-## 2. **useReducer**
+## 2. useReducer
 
 ***useReducer*** is a React Hook used for state management when state logic is complex or depends on previous state.
 
@@ -214,7 +214,7 @@ export default function SignupForm() {
 
 <br>
 
-## 3. **custom hooks**
+## 3. custom hooks
 
 - A custom hook is a reusable JavaScript function that uses React hooks and starts with the word ***use***.
 - It helps you share logic between components without repeating code.
