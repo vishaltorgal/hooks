@@ -15,7 +15,7 @@
 11. [Difference between custom hook and components](#11-difference-between-custom-hook-and-components)
 12. [useReducer vs Context API vs Redux](#12-usereducer-vs-context-api-vs-redux)
 13. [Form Validation (Custom Hook)](#13-form-validation-custom-hook)
-14. [Form Validation (react hook form)](#13-form-validation-react-hook-form)
+14. [Form Validation (react hook form)](#14-form-validation-react-hook-form)
 15. [Form Validation (formik)](#15-form-validation-formik)
 
 
