@@ -390,6 +390,86 @@ function useLocalStorage(key, initial) {
 | Return value | Cached value           | Cached function                  |
 | Usage        | Expensive calculations | Prevent re creation of functions |
 
+***useMemo Example***
+```jsx
+import React, { useState, useMemo } from 'react';
+
+function ExpensiveComponent() {
+  const [count, setCount] = useState(0);
+  const [otherState, setOtherState] = useState(0);
+
+  // Expensive calculation - only runs when count changes
+  const expensiveValue = useMemo(() => {
+    console.log('Calculating...');
+    let result = 0;
+    for (let i = 0; i < 1000000; i++) {
+      result += i;
+    }
+    return result;
+  }, [count]); // Only recalculates when count changes
+
+/*
+// Will run of all clicks
+ const expensiveValue = (() => {
+    alert('Calculating...');  // Shows on EVERY button click!
+    let result = 0;
+    for (let i = 0; i < 1000000; i++) {
+      result += i;
+    }
+    return result;
+  })();
+*/
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <p>Expensive Value: {expensiveValue}</p>
+      <p>Other State: {otherState}</p>
+      <button onClick={() => setCount(count + 1)}>Increment Count</button>
+      <button onClick={() => setOtherState(otherState + 1)}>Increment Other</button>
+    </div>
+  );
+}
+```
+***useCallback Example***
+```jsx
+import React, { useState, useCallback } from 'react';
+
+const Child = React.memo(({ onClick }) => {
+  console.log('Child rendered');
+  return <button onClick={onClick}>Child Button</button>;
+});
+
+/*
+//Remove memo below then every click 'Child rendered' alert will render.
+const Child = ({ onClick }) => {
+  alert('Child rendered');
+  return <button onClick={onClick}>Child Button</button>;
+};
+*/
+
+function Parent() {
+  const [count, setCount] = useState(0);
+  const [otherState, setOtherState] = useState(0);
+
+  // Without useCallback: new function created every render
+  // With useCallback: same function reference unless deps change
+  const handleClick = useCallback(() => {
+    console.log('Button clicked');
+  }, []); // Empty deps = function never changes
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <p>Other State: {otherState}</p>
+      <Child onClick={handleClick} />
+      <button onClick={() => setCount(count + 1)}>Parent Count</button>
+      <button onClick={() => setOtherState(otherState + 1)}>Other State</button>
+    </div>
+  );
+}
+
+```
 <br>
 
 ## 7. Difference between useRef and useState
