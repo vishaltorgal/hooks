@@ -584,26 +584,45 @@ function App() {
 ***useCallback*** remembers a function, so it is not recreated on every render.
 
 ```jsx
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, memo } from 'react';
 
-function App() {
+// Child component wrapped in memo — only re-renders if props change
+const Button = memo(({ onClick, label }) => {
+  alert(`Rendering: ${label}`);
+  return <button onClick={onClick}>{label}</button>;
+});
+
+export default function App() {
   const [count, setCount] = useState(0);
+  const [other, setOther] = useState(0);
 
-  const sayHello = useCallback(() => {
-    console.log("Hello");
-  }, []);
+  // ✅ Cached — same function reference until deps change
+  const handleCount = useCallback(() => {
+    setCount((c) => c + 1);
+  }, []); // empty deps → never recreated
+
+  // ❌ Not cached — new function created on every render
+  const handleOther = () => setOther((o) => o + 1);
 
   return (
-    <>
-      <p>{count}</p>
-      <button onClick={() => setCount(count + 1)}>Increase</button>
-      <button onClick={sayHello}>Say Hello</button>
-    </>
+    <div>
+      <p>
+        Count: {count} | Other: {other}
+      </p>
+
+      {/* Won't re-render when `other` changes (callback is stable) */}
+      <Button onClick={handleCount} label="Increment Count" />
+
+      {/* Re-renders on every change (new function reference each time) */}
+      <Button onClick={handleOther} label="Increment Other" />
+    </div>
   );
 }
-
-export default App;
 ```
+`What happens here`
+- Click "Increment Other" → both buttons log to console (both re-render)
+- Click "Increment Count" → only "Increment Count" logs (one re-render)
+
 - useCallback remembers a function so it is not recreated on every re render.
 - React normally creates functions again and again.
 - useCallback stops that and keeps the same function.
