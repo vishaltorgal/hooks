@@ -278,85 +278,19 @@ function Counter() {
 
 ### Use Cases
 
-***API Calls***
-```jsx
-function useUsers() {
-  const [users, setUsers] = useState([]);
+| Use Case             | What It Does                                | Example Hook                 | Where It’s Used                 |
+| -------------------- | ------------------------------------------- | ---------------------------- | ------------------------------- |
+| Reusable State Logic | Shares common state logic across components | `useCounter`, `useToggle`    | Counters, show/hide UI          |
+| API Calls            | Fetches and manages data                    | `useFetch`, `useApi`         | Dashboards, data display        |
+| Form Handling        | Manages inputs and validation               | `useForm`                    | Login, signup forms             |
+| Authentication       | Handles login state and tokens              | `useAuth`                    | Protected routes, user sessions |
+| Event Listeners      | Adds reusable event logic                   | `useWindowSize`, `useScroll` | Responsive UI, scroll tracking  |
+| Local Storage        | Syncs state with browser storage            | `useLocalStorage`            | Save user preferences           |
+| Debouncing           | Delays execution for performance            | `useDebounce`                | Search inputs, API calls        |
+| Media Queries        | Detects screen size                         | `useMediaQuery`              | Mobile vs desktop UI            |
+| UI Logic             | Manages component behavior                  | `useModal`, `useTabs`        | Modals, tabs, dropdowns         |
+| Pagination           | Handles page data logic                     | `usePagination`              | Tables, lists                   |
 
-  useEffect(() => {
-    fetch("/api/users")
-      .then(res => res.json())
-      .then(setUsers);
-  }, []);
-
-  return users;
-}
-```
-
-***Loaders***
-```jsx
-function useFetchData() {
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    fetchData().finally(() => setLoading(false));
-  }, []);
-
-  return loading;
-}
-```
-***Handling Repeated Side Effects***
-- Window resize
-- Scroll position
-- Online/offline status
-- Event listeners
-  
-```jsx
-function useWindowWidth() {
-  const [width, setWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handler = () => setWidth(window.innerWidth);
-    window.addEventListener("resize", handler);
-    return () => window.removeEventListener("resize", handler);
-  }, []);
-
-  return width;
-}
-```
-
-***Abstracting Complex State Logic***
-- Forms
-- Multi-step flows
-- Validation
-  
-```jsx
-function useForm(initialValues) {
-  const [values, setValues] = useState(initialValues);
-
-  const handleChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value });
-  };
-
-  return { values, handleChange };
-}
-```
-
-***localStorage***
-```jsx
-function useLocalStorage(key, initial) {
-  const [value, setValue] = useState(() => {
-    return JSON.parse(localStorage.getItem(key)) ?? initial;
-  });
-
-  useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value));
-  }, [key, value]);
-
-  return [value, setValue];
-}
-```
 
 <br>
 
@@ -583,6 +517,37 @@ function App() {
 
 ***useCallback*** remembers a function, so it is not recreated on every render.
 
+### 🧠 Simple idea
+
+`In React, every time a component updates:`
+
+- Functions are created again
+- Even if nothing actually changed
+
+`This can cause:`
+
+- Extra re-renders
+- Performance issues (in some cases)
+
+### 🎯 Easy example (real life thinking)
+`Contact name in phone`
+
+`Imagine:`
+
+- You save a contact
+- Every day you delete and save it again with the same number
+- Your phone keeps updating unnecessarily
+  
+- 👉 Better to keep it saved once
+- That’s useCallback
+
+👉 useCallback helps reuse the same function instead of creating a new one every time
+
+### ⚙️ What it does
+- Stores (memoizes) a function
+ Returns the same function on re-render
+- Only changes it when needed
+
 ```jsx
 import React, { useState, useCallback, memo } from 'react';
 
@@ -658,17 +623,57 @@ export default function App() {
 | Best used when  | You need to show something | You need to share logic |
 | React treats as | Renderable element         | Logic abstraction       |
 
-## 12. useReducer vs Context API vs Redux
+## 12. Context API vs useReducer vs Redux
+
+| Scenario level         | What happens                 | Best choice |
+| ---------------------- | ---------------------------- | ----------- |
+| Simple cart sharing    | Just store and access items  | Context API |
+| Medium complexity cart | Add/remove/update logic      | useReducer  |
+| Large app cart system  | API, coupons, multiple pages | Redux       |
+
+| Scenario level         | What happens                     | Best choice |
+| ---------------------- | -------------------------------- | ----------- |
+| Simple order sharing   | Just store current order         | Context API |
+| Medium order logic     | Add/remove/update items          | useReducer  |
+| Full restaurant system | Multi tables, billing, real-time | Redux       |
+
 
 🎬 Imagine You Are Managing a Restaurant
 
 ***We’ll compare:***
-- useReducer
 - Context API
+- useReducer
 - Redux
 
+### 1️⃣  Context API
+📢 `Restaurant Announcement System`
 
-## 1️⃣ useReducer
+*Now imagine:*
+
+***The restaurant has information everyone needs:***
+- Today’s special dish
+- Restaurant closing time
+- Discount day
+- Chef name
+
+*Instead of telling each waiter individually, you make an announcement.*
+
+*Everyone can access that info easily.*
+
+👉 **That announcement system = Context API**
+
+***When to use:***
+- Theme
+- Logged-in user
+- Language
+- Small global settings
+- Data that many components need
+
+***Important:***
+- Context only shares data.
+-
+
+### 2️⃣ useReducer
 🍳 `Kitchen Manager`
 
 *Inside the kitchen:*
@@ -698,36 +703,10 @@ So the kitchen manager handles all order decisions properly.
 - Many actions changing the same state
 - Clear decision rules needed
 
-## 2️⃣ Context API
-📢 `Restaurant Announcement System`
-
-*Now imagine:*
-
-***The restaurant has information everyone needs:***
-- Today’s special dish
-- Restaurant closing time
-- Discount day
-- Chef name
-
-*Instead of telling each waiter individually, you make an announcement.*
-
-*Everyone can access that info easily.*
-
-👉 **That announcement system = Context API**
-
-***When to use:***
-- Theme
-- Logged-in user
-- Language
-- Small global settings
-- Data that many components need
-
-***Important:***
-- Context only shares data.
-- It does not manage complex logic.
+ It does not manage complex logic.
 
 
-## 3️⃣ Redux
+### 3️⃣ Redux
 🏢 `Restaurant Franchise Headquarters`
 
 ***Now imagine:***
