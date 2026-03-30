@@ -456,6 +456,19 @@ function Parent() {
 
 ***useMemo*** returns a cached value and recomputes it only when its dependencies change.
 
+### Example (easy to understand)
+
+`Imagine:`
+
+- bYour mom asks you to count all chocolates in a big box
+- It takes a lot of time
+
+`Next day:`
+
+- She asks again, but nothing changed
+- 👉 Instead of counting again, you just remember the answer
+- That’s useMemo 😄
+
 ```jsx
 import { useMemo, useState } from "react";
 
