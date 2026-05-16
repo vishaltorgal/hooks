@@ -460,7 +460,7 @@ function Parent() {
 
 `Imagine:`
 
-- bYour mom asks you to count all chocolates in a big box
+- Your mom asks you to count all chocolates in a big box
 - It takes a lot of time
 
 `Next day:`
